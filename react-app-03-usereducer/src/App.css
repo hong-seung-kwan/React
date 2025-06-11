@@ -1,0 +1,6 @@
+/* App 컴포넌트의 자식인 아이템 정렬하기 */
+.App {
+  display: flex;
+  flex-direction: row; /* 정렬 방향 - 가로 */
+  gap: 3px;
+}
