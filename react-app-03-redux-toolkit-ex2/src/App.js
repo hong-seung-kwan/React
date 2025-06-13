@@ -9,10 +9,9 @@ import Calc from "./component/Calc";
 
 // slice를 먼저 생성하고 slice 여러개를 모아서 store 생성
 
-
 // 1. 계산기에 필요한 slice 생성
-  // 인자: 슬라이스이름, state초기값, reducer함수
-  // 외부에서 사용할 수 있도록 slice를 export
+// 인자: 슬라이스이름, state초기값, reducer함수
+// 외부에서 사용할 수 있도록 slice를 export
   export const calcSlice = createSlice( { 
     name: 'calcSlice',
     initialState: {result:null}, // state 목록
@@ -24,11 +23,11 @@ import Calc from "./component/Calc";
       // 인자: 현재 state값, 액션(명령과 작업에 필요한 데이터)
       '+': (state, action)=>{
         // 액션 함수를 쓰면 데이터가 payload로 돌아옴
-        state.result = action.payload.num1 + action.payload.num2
+        state.result = action.num1 + action.num2
       },
-      '-': (state, action)=>{state.result = action.payload.num1 - action.payload.num2},
-      '*': (state, action)=>{state.result = action.payload.num1 * action.payload.num2},
-      '/': (state, action)=>{state.result = action.payload.num1 / action.payload.num2},
+      '-': (state, action)=>{state.result = action.num1 - action.num2},
+      '*': (state, action)=>{state.result = action.num1 * action.num2},
+      '/': (state, action)=>{state.result = action.num1 / action.num2},
       '0': (state, action)=>{state.result = null},
     }
   } )

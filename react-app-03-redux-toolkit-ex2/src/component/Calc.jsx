@@ -73,8 +73,8 @@ const Calc = () => {
       <button onClick={() => {
         dispatch({ type: "calcSlice/"+operator, num1: num1, num2: num2 })
 
-        // 인자: 작업에 필요한 두 숫자
-        dispatch( calcSlice.actions[operator]({num1: num1, num2: num2}))
+        // // 인자: 작업에 필요한 두 숫자
+        // dispatch( calcSlice.actions[operator]({num1: num1, num2: num2}))
       }}>=</button>
 
       <button onClick={clear}>C</button>
