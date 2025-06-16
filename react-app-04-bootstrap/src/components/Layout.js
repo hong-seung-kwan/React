@@ -10,8 +10,13 @@ import styled from "styled-components"
 // styled component를 사용해서 css 쓰기
 
 // styled component로 div 태그 생성
+// 자식 아이템 배치
+// Layout의 자식인 Header와 Home을 가운데 배치
 const LayoutDiv = styled.div`
   background-color: #e9ecef;
+  display: flex;
+  flex-direction: column; /* 배치 방향: 수직 */
+  align-items: center; /* 가운데 정렬 */
 `
 
 // div 태그 -> LayoutDiv 컴포넌트 교체

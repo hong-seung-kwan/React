@@ -3,32 +3,42 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import styled from 'styled-components';
+
+// 메뉴바 꾸미기
+// styled component로 div 태그 생성
+
+const HeaderDiv = styled.div`
+/* 크기 */
+width: 100%;
+height: 100px;
+background-color: white;
+display: flex; /* 방향이 없으면 y축이 주축 */
+align-items: center;
+/* 그림자 효과 */
+box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+`
 
 const Header = () => {
   return (
-     <Navbar expand="lg" className="bg-body-tertiary">
-      <Container>
-        <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#link">Link</Nav.Link>
-            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
-                Separated link
-              </NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+    <HeaderDiv>
+      {/* Navbar 컴포넌트 */}
+      <Navbar expand="lg">
+        <Container>
+          <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link href="/login">login</Nav.Link>
+              <Nav.Link href="/logout">logout</Nav.Link>
+              <Nav.Link href="/register">register</Nav.Link>
+              <Nav.Link href="/">home</Nav.Link>
+              <Nav.Link href="/board/list">board</Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+    </HeaderDiv>
   )
 }
 
