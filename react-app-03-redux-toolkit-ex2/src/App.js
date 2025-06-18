@@ -51,7 +51,7 @@ function App() {
   return (
     <div className="App">
        <h3>계산기</h3>
-       {/* redux의 poriver로 store를 주입 */}
+       {/* redux의 provider로 store를 주입 */}
       <Provider store={store}>
         <Calc></Calc>
       </Provider>

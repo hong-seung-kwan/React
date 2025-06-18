@@ -1,7 +1,7 @@
 import { useReducer, useState } from "react"
 import { Provider } from "react-redux";
 import { createStore } from "redux";
-import Calc from './component/Calc';
+import Calc from './components/calc';
 
 
 

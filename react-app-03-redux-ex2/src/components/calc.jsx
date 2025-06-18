@@ -65,3 +65,4 @@ const Calc= () => {
     </div>
   )
 }
+export default Calc;
