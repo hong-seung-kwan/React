@@ -10,6 +10,7 @@ import BoardList from "./features/BoardList";
 import BoardDetail from "./features/BoardDetail";
 import BoardRegister from "./features/BoardRegister";
 import BoardModify from "./features/BoardModify";
+import "./App.css";
 
 function App() {
   return (

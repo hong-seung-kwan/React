@@ -3,7 +3,10 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import { useDispatch, useSelector } from 'react-redux';
+import { NavLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { logout } from '../store/memberSlice';
 
 // 메뉴바 꾸미기
 // styled component로 div 태그 생성
@@ -20,6 +23,17 @@ box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
 `
 
 const Header = () => {
+
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
+  const memberInfo = useSelector((state) => {
+    console.log(state);
+    return state.member.info
+  });
+
+
   return (
     <HeaderDiv>
       {/* Navbar 컴포넌트 */}
@@ -29,6 +43,21 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
+              {
+                memberInfo === null ?
+                <>
+                  <Nav.Link as={NavLink} to="/register">회원가입</Nav.Link>
+                  <Nav.Link as={NavLink} to="/login">로그인</Nav.Link>
+                </>
+                :
+                <>
+                <Nav.Link onClick={()=>{
+                  dispatch(logout());
+                  navigate('/');
+                }}>로그아웃</Nav.Link>
+                <Nav.Link as={NavLink} to="/">홈</Nav.Link>
+                </>
+              }
               <Nav.Link href="/login">login</Nav.Link>
               <Nav.Link href="/logout">logout</Nav.Link>
               <Nav.Link href="/register">register</Nav.Link>

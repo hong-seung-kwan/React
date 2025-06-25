@@ -7,7 +7,7 @@ import styled from "styled-components";
 export const CustomCard = styled.div`
   /* 크기 */
   width: 1150px;
-  height: 800px;
+  height: 100%;
   background-color: white;
   border-radius: 16px;
   border: none;

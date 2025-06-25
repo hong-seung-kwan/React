@@ -9,10 +9,6 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Context } from "../index";
 
-// 가짜데이터
-// const board = { no: 1, title: '1번', content: '1번입니다', writer: '둘리', regDate: '2025-06-01', modDate: '2025-06-01' }
-
-// const board = null
 
 // 공통 스타일로 꾸미기
 const BoardDetail = () => {
@@ -33,6 +29,9 @@ const BoardDetail = () => {
   // context 저장소에서 host 가져오기
   // object 구조분해
   const {host} = useContext(Context)
+
+  // 파일 기본경로
+  const IMG_PATH = '/images/';
 
   // axios는 비동기 함수로 응답을 기다렸다가 받아야함
   // await는 async 함수 안에서만 사용 가능
@@ -104,6 +103,20 @@ const BoardDetail = () => {
               <Form.Label>수정일</Form.Label>
               <Form.Control type="text" value={board.modDate} readOnly />
             </Form.Group>
+            {/* scr에 이미지 경로 작성 */}            
+            {/* Not allowed to load local resource */}
+            {/* => 브라우저가 보안상의 이유로 리소스에 직접 접근 막음 */}
+            {/* 해결 방법: */}
+            {/* 1. 프로젝트 내부에 저장하여 상대경로로 접근 */}
+            {/* 2. aws같은 사이트를 사용하여 공개주소로 접근 */}
+            {/* react app의 웹 루트 */}
+            {/* public 아래 images 접근: /images/apple.jpg */}
+
+            {/* 나중에 AWS S3로 바꿀 예정 */}
+            <Form.Group className="mb-3">
+              <img src={`${IMG_PATH}${board.imgPath}`}></img>
+            </Form.Group>
+
             {/* 게시물 수정화면으로 이동하는 버튼 */}
             {/* URL 경로에 게시물 번호 추가 */}
             {/* 예: /board/modify/1 */}
