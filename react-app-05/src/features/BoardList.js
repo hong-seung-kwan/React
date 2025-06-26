@@ -9,10 +9,13 @@ import Col from 'react-bootstrap/Col';
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Context } from "../index";
+import { useSelector } from "react-redux";
 
 // 게시물 리스트
 // API를 호출하여 데이터베이스에 있는 데이터 가져오기
 const BoardList = () => {
+
+  const token = useSelector((state)=> state.member.token);
 
   // URL 주소를 변경하여 페이지를 이동할 때 사용
   const navigate = useNavigate()
@@ -37,9 +40,12 @@ const BoardList = () => {
     // api를 호출하고 응답받는 함수
     const respone = await axios.get(`${host}/board/list`, {
       headers: {
-        Authorization: 'eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NTAyOTU3MTMsImV4cCI6MTc1Mjg4NzcxMywic3ViIjoidXNlciJ9.O7AMY8vhqq3rC3WxPQqF8CthZFTjDnTO54s8VFBrvyo'
+        Authorization: token
       }
-    })
+    });
+    if (respone.status !== 200) {
+      throw new Error(`api error: ${respone.status} ${respone.statusText}`);
+    }
     // 상태 업데이트 응답메세지에서 데이터만 꺼내기
     setData(respone.data)
   }
@@ -94,7 +100,6 @@ const BoardList = () => {
                 <td><Link to={'/board/read/' + board.no} >{board.no}</Link></td>
                 <td>{board.title}</td>
                 <td>{board.writer}</td>
-                <td>{board.regDate}</td>
               </tr>
             )}
           </tbody>

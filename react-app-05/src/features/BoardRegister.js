@@ -7,6 +7,7 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { Context } from "../index";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 // 새로운 게시물 정보를 입력받는 화면
 // 게시물 데이터: 번호, 제목, 내용, 작성자, 등록일, 수정일
@@ -16,6 +17,8 @@ import { useNavigate } from "react-router-dom";
 
 
 const BoardRegister = () => {
+
+  const token = useSelector((state) => state.member.token);
 
   // 게시물 데이터를 담을 state 생성
   // object {}로 초기화
@@ -48,15 +51,15 @@ const BoardRegister = () => {
     // axios = 비동기함수
     const response = await axios.post(`${host}/board/register`, formData, {
       headers: {
-        Authorization : 'eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NTAyOTU3MTMsImV4cCI6MTc1Mjg4NzcxMywic3ViIjoidXNlciJ9.O7AMY8vhqq3rC3WxPQqF8CthZFTjDnTO54s8VFBrvyo'
+        Authorization : token
       }
     })
     // API 호출 후 처리
     // 게시물 등록 후 게시물 리스트로 이동
     if(response.status === 201){
-      console.log(response.data)
-      // api 상관없음 리액트 내부 주소
       navigate('/board/list')
+    } else {
+      throw new Error(`api error: ${response.status} ${response.statusText}`);
     }
   }
 

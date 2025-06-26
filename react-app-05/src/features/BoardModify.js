@@ -4,7 +4,8 @@ import Button from 'react-bootstrap/Button';
 import { useContext, useEffect, useState } from "react";
 import { Context } from "../index";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 // 게시물 수정 화면
 // 기존 게시물 데이터 조회
@@ -13,103 +14,142 @@ import { useParams } from "react-router-dom";
 
 const BoardModify = () => {
 
+  const token = useSelector((state) => state.member.token);
+
+  const navigate = useNavigate();
+
   let [board, setBoard] = useState(null)
 
   // api 기본 주소 가져오기
-  const {host} = useContext(Context)
+  const { host } = useContext(Context)
 
   // URL 주소에 포함되어 있는 no 파라미터 꺼내기
   const params = useParams()
-
-  // axios를 사용해서 게시물 단건 조회 api 호출
-  const apicall = async () => {
-    // 인자: URL주소, 헤더
-    const response = await axios.get(`${host}/board/read?no=${params.no}`, {
-      headers: {
-        Authorization: 'eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NTAyOTU3MTMsImV4cCI6MTc1Mjg4NzcxMywic3ViIjoidXNlciJ9.O7AMY8vhqq3rC3WxPQqF8CthZFTjDnTO54s8VFBrvyo'
+  useEffect(() => {
+    // axios를 사용해서 게시물 단건 조회 api 호출
+    const apicall = async () => {
+      // 인자: URL주소, 헤더
+      const response = await axios.get(`${host}/board/read?no=${params.no}`, {
+        headers: {
+          Authorization: token
+        }
+      });
+      if (response.status !== 200) {
+        throw new Error(`api error: ${response.status} ${response.statusText}`);
+      } else {
+        setBoard(response.data);
       }
-    })
-    if(response.status === 200){
-      setBoard(response.data)
     }
-  }
-  // 컴포넌트가 처음 로드될때 한번만 api를 호출
-  useEffect(()=>{
+    // 컴포넌트가 처음 로드될때 한번만 api를 호출
+
     apicall()
-  },[])
+  }, [])
 
   // 사용자가 입력필드에서 값을 바꾸면 실행됨
   // 사용자가 입력한 내용을 다시 board state에 업데이트
   // 그러면 변경된 내용이 화면에 나타남
-  const handlerChange = (e) => {
-    
+  const handleChange = (e) => {
+
     // 이벤트가 발생한 엘리먼트에서 데이터만 추출
-    const {name, value, files} = e.target
+    const { name, value, files } = e.target
 
     // 기존 게시물 복사
-    const newBoard = {...board}
+    const newBoard = { ...board }
 
-    // 특정 프로퍼티만 교체
-    // 예: newBoard[title] = 'abc'
-    // 엘리먼트가 가지고 있는 name을 key로 사용
-    newBoard[name] = value
+    if(name === 'uploadFile'){
+      newBoard[name] = files[0];
+    } else {
+      newBoard[name] = value;
+    }
 
     // 상태 업데이트
     setBoard(newBoard)
   }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData()
+    formData.append('no', board.no)
+    formData.append('title', board.title)
+    formData.append('content', board.content)
+    if(board.uploadFile != null){
+      formData.append('uploadFile', board.uploadFile)
+    }
+
+    const response = await axios.put(
+      `${host}/board/modify`,
+      formData,
+      {
+        headers: {
+          Authorization: token
+        }
+      }
+    );
+
+    if (response.status !== 204) {
+      throw new Error(`api error: ${response.status} ${response.statusText}`);
+    } else {
+      navigate(`/board/read/${board.no}`);
+    }
+  }
+
+  const handleRemove = async () => {
+    const no = board.no;
+
+    const response = await axios.delete(
+      `${host}/board/remove?no=${no}`,
+      {
+        headers: {
+          Authorization: token
+        }
+      }
+    );
+
+    if(response.status !== 204){
+      throw new Error(`api error: ${response.status} ${response.statusText}`);
+    } else {
+      navigate(`/board/list`);
+    }
+  }
+
+
   return (
     <CustomCard>
       <CustomContainer>
-        <h3>게시물 수정</h3>
-        {/* 두번째 식에 <form> 컴포넌트 넣기 */}
-        {/* 두번째식에는 하나의 태그만 써야함 */}
-        {/* 논리곱 두 식 true면 결과 true */}
-        {/* 첫번째 식이 false면 두번째 생략 */}
-        {/* board 데이터 있으면 form태그 생성 */}
-        {
-          board !==null && <Form>
+        <h3>게시물 수정</h3>{
+           
+        board!==null &&   
 
-          <Form.Group className="mb-3" controlId="board.no">
-            <Form.Label>번호</Form.Label>
-            <Form.Control type="text" value={board.no} readOnly/>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="board.title">
-            <Form.Label>제목</Form.Label>
-            <Form.Control type="text" name="title" value={board.title} onChange={handlerChange}/>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="board.content">
-            <Form.Label>내용</Form.Label>
-            <Form.Control as="textarea" name="content" rows={3} value={board.content} onChange={handlerChange}/>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="board.writer">
-            <Form.Label>작성자</Form.Label>
-            <Form.Control type="text" value={board.writer} readOnly/>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="board.uploadFile">
-            <Form.Label>이미지</Form.Label>
-            <Form.Control type="file" name="uploadFile" onChange={handlerChange}/>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="board.regDate">
+        <form onSubmit={handleSubmit}>
+        <Form.Group controlId="board.title">
+          <Form.Label>제목</Form.Label>
+          <Form.Control type="text" name='title' value={board.title} onChange={handleChange}></Form.Control>
+        </Form.Group>
+        <Form.Group controlId="board.content">
+          <Form.Label>내용</Form.Label>
+          <Form.Control as="textarea" rows={3} name='content' value={board.content} onChange={handleChange}/>
+        </Form.Group>
+        <Form.Group controlId="board.writer">
+          <Form.Label>작성자</Form.Label>
+          <Form.Control type="text" value={board.writer} disabled ></Form.Control>
+        </Form.Group>
+        <Form.Group controlId="board.uploadFile">
+          <Form.Label>이미지</Form.Label>
+          <Form.Control type="file" name="uploadFile" onChange={handleChange}/>
+        </Form.Group>
+        <Form.Group controlId="board.regDate">
             <Form.Label>등록일</Form.Label>
-            <Form.Control type="text" value={board.regDate} readOnly/>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="board.modDate" >
+            <Form.Control type="text" value={board.regDate} disabled readOnly></Form.Control>
+        </Form.Group>   
+        <Form.Group controlId="board.modDate">
             <Form.Label>수정일</Form.Label>
-            <Form.Control type="text" value={board.modDate} readOnly/>
-          </Form.Group>
-          
-          <Button variant="secondary" type="submit">저장</Button>
-          <Button variant="danger">삭제</Button>
-        </Form>
+            <Form.Control type="text" value={board.modDate} disabled readOnly></Form.Control>
+        </Form.Group>  
+        <Button variant="secondary" type='submit'>수정</Button>
+        <Button variant="secondary" onClick={handleRemove}>삭제</Button>
+        </form>
         }
-        
       </CustomContainer>
     </CustomCard>
   )

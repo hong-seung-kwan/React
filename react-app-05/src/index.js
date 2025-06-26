@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { createContext } from 'react';
 import store from './store/store';
 import { login } from './store/memberSlice';
+import { Provider } from 'react-redux';
 
 // router 기능 활성화
 // 최상위 컴포넌트 router로 감싸기
@@ -20,24 +21,28 @@ export const Context = createContext()
 
 
 let host = null;
-
-// 현재 react app을 실행시키는 컴퓨터 이름
-console.log(window.location.hostname)
+if (window.location.hostname === "localhost") {
+    host = 'http://localhost:8080';
+} else {
+    host = '/api'
+}
 
 const userStr = localStorage.getItem('user');
 const token = localStorage.getItem('token')
 if (userStr !== null) {
     const user = JSON.parse(userStr);
-    store.dispatch(login({user: user, token: token}));
+    store.dispatch(login({ user: user, token: token }));
 }
 
 // 하위 컴포넌트들에게 저장소를 공유
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <Context.Provider value={ {host} }>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
-    </Context.Provider>
+    <BrowserRouter>
+        <Context.Provider value={{ host }}>
+            <Provider store={store}>
+                <App />
+            </Provider>
+        </Context.Provider >
+    </BrowserRouter>
 );
 
